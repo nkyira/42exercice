@@ -1,10 +1,10 @@
-LIBRARY = libftprintf.a
+NAME = libftprintf.a
 CC = gcc -Werror -Wall -Wextra
-SRC = printf.c
-OBJ = $(SRC: .o=.o)
+SRC = printf.c printf_utils.c printf_utils1.c
+OBJ = $(SRC:.c=.o)
 RM = rm -f
 
-all: $(LIBRARY)
+all: $(NAME)
 
 $(NAME): $(OBJ)
 	ar rcs $(NAME) $(OBJ)
@@ -13,7 +13,7 @@ $(NAME): $(OBJ)
 	$(CC) -c $< -o $@
 
 clean:
-	$(RM) $(NAME)
+	$(RM) $(OBJ)
 
 fclean: clean
 	$(RM) $(NAME)
