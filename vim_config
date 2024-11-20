@@ -1,0 +1,16 @@
+set number
+set relativenumber
+set mouse=a
+syntax on
+let mapleader = " "  " Set <leader> key to Spacebar
+
+" Surround word with single quotes
+nnoremap <leader>' ciw'<C-r>"'<Esc>
+
+" Surround word with double quotes
+nnoremap <leader>" ciw"<C-r>""<Esc>
+
+" Surround word with parentheses
+nnoremap <leader>( ciw(<C-r>")<Esc>
+
+xnoremap <leader>/ <Esc>`<i/* <Esc>`>a */<Esc>

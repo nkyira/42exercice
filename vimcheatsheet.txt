@@ -1,0 +1,21 @@
+NORMAL MODE
+	:map			see mapping						
+	:ls				list buffers					
+	:bx				go to x buffer					
+	:n				next file						
+	:N				previous file					
+	:%s/old/new/g	replaces every occurrence of old with new	
+	r				replace character				
+	x				delete single character
+	R				replace mode					
+	b w				words separated by anything		
+	B W				words separated by (whitespace)	
+	u				undo							
+	Ctrl+r			redo							
+	<space>(		surround word with ()
+	<space>"		surround word with ""
+	<space>'		surround word with ''
+
+VISUAL MODE
+	y			yank
+	d			delete	
