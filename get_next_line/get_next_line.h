@@ -6,7 +6,7 @@
 /*   By: jodavis <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 09:07:43 by jodavis           #+#    #+#             */
-/*   Updated: 2024/11/22 17:54:53 by jodavis          ###   ########.fr       */
+/*   Updated: 2024/12/11 06:16:08 by jodavis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 # endif
 
 char	*get_next_line(int fd);
-int		str_len(char *s);
-void	str_cat(char *s1, char *s2);
+int		str_len(char *s, char end);
+void	str_cat(char *s1, char *s2, char end);
 int		contains_newline(char *s);
 char	*my_read(int fd, int size);
 

@@ -4,17 +4,18 @@ NORMAL MODE
 	:bx				go to x buffer					
 	:n				next file						
 	:N				previous file					
-	:%s/old/new/g	replaces every occurrence of old with new	
+	:split or :vsplit		split horizontally or vertically
+	:%s/old/new/g			replaces every occurrence of old with new	
 	r				replace character				
 	x				delete single character
 	R				replace mode					
-	b w				words separated by anything		
-	B W				words separated by (whitespace)	
+	b or w				words separated by anything		
+	B or W				words eparated by (whitespace)	
 	u				undo							
-	Ctrl+r			redo							
-	<space>(		surround word with ()
-	<space>"		surround word with ""
-	<space>'		surround word with ''
+	Ctrl+r				redo							
+	<space>(			surround word with ()
+	<space>"			surround word with ""
+	<space>'			surround word with ''
 
 VISUAL MODE
 	y			yank
