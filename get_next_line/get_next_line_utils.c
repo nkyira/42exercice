@@ -6,7 +6,7 @@
 /*   By: jodavis <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 16:33:55 by jodavis           #+#    #+#             */
-/*   Updated: 2024/12/11 06:15:55 by jodavis          ###   ########.fr       */
+/*   Updated: 2024/12/13 07:06:44 by jodavis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,12 @@ void	str_cat(char *s1, char *s2, char end)
 		s1++;
 		s2++;
 	}
+	if (end == '\n')
+	{
+		*s1 = *s2;
+		s1++;
+		s2++;
+	}
 	*s1 = '\0';
 }
 
@@ -49,18 +55,40 @@ int	contains_newline(char *s)
 	return (0);
 }
 
+char	*fix_error(char **broken, int ret)
+{
+	char	*fixed;
+	char	*temp;
+
+	temp = *broken;
+	fixed = malloc(ret + 1);
+	if (!fixed)
+		return (NULL);
+	fixed[ret] = '\0';
+	while (ret--)
+		fixed[ret] = temp[ret];
+	free(*broken);
+	printf("(my_read : %s)", fixed);
+	return (fixed);
+}
+
 char	*my_read(int fd, int size)
 {
 	char	*ret_str;
+	int		ret;
 
 	ret_str = malloc(size + 1);
 	if (!ret_str)
 		return (NULL);
-	if (read(fd, ret_str, size) <= 0)
+	ret = read(fd, ret_str, size);
+	if (ret <= 0)
 	{
 		free(ret_str);
 		return (NULL);
 	}
 	ret_str[size] = '\0';
+	if (ret != str_len(ret_str, '\0'))
+		return (fix_error(&ret_str, ret));
+	printf("(my_read : %s)", ret_str);
 	return (ret_str);
 }
