@@ -6,7 +6,7 @@
 /*   By: jodavis <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 16:33:55 by jodavis           #+#    #+#             */
-/*   Updated: 2024/12/13 07:06:44 by jodavis          ###   ########.fr       */
+/*   Updated: 2024/12/13 07:19:32 by jodavis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ char	*fix_error(char **broken, int ret)
 	while (ret--)
 		fixed[ret] = temp[ret];
 	free(*broken);
-	printf("(my_read : %s)", fixed);
 	return (fixed);
 }
 
@@ -89,6 +88,5 @@ char	*my_read(int fd, int size)
 	ret_str[size] = '\0';
 	if (ret != str_len(ret_str, '\0'))
 		return (fix_error(&ret_str, ret));
-	printf("(my_read : %s)", ret_str);
 	return (ret_str);
 }
