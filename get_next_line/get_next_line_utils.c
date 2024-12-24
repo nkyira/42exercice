@@ -6,7 +6,7 @@
 /*   By: jodavis <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 16:33:55 by jodavis           #+#    #+#             */
-/*   Updated: 2024/12/13 07:19:32 by jodavis          ###   ########.fr       */
+/*   Updated: 2024/12/24 16:06:53 by jodavis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,20 +67,27 @@ char	*fix_error(char **broken, int ret)
 	fixed[ret] = '\0';
 	while (ret--)
 		fixed[ret] = temp[ret];
-	free(*broken);
+	final_free(broken);
 	return (fixed);
 }
 
-char	*my_read(int fd, int size)
+char	*my_read(int fd, int size, int *rd_err)
 {
 	char	*ret_str;
 	int		ret;
 
+	*rd_err = 0;
 	ret_str = malloc(size + 1);
 	if (!ret_str)
 		return (NULL);
 	ret = read(fd, ret_str, size);
-	if (ret <= 0)
+	if (ret < 0)
+	{
+		*rd_err = 1;
+		free(ret_str);
+		return (NULL);
+	}
+	else if (!ret)
 	{
 		free(ret_str);
 		return (NULL);
