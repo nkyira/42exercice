@@ -1,99 +1,37 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jodavis <marvin@42lausanne.ch>             +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/22 16:33:55 by jodavis           #+#    #+#             */
-/*   Updated: 2024/12/24 16:06:53 by jodavis          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
-#include <stdio.h>
+#include "stdio.h"
 
-int	str_len(char *s, char end)
-{	
+void	reset_str(char *str)
+{
 	int	i;
 
+	i = -1;
+	while (++i <= BUFFER_SIZE + 1)
+		str[i] = '\0';
+}
+
+size_t	push_len(char *str_left)
+{
+	size_t	i;
+
 	i = 0;
-	while (s[i] != end)
-	{
+	while (str_left[i] && i <= BUFFER_SIZE)
 		i++;
-	}
 	return (i);
 }
 
-void	str_cat(char *s1, char *s2, char end)
+int	contains_nl(char *str)
 {
-	while (*s1)
-		s1++;
-	while (*s2 != end)
+	while (*str)
 	{
-		*s1 = *s2;
-		s1++;
-		s2++;
-	}
-	if (end == '\n')
-	{
-		*s1 = *s2;
-		s1++;
-		s2++;
-	}
-	*s1 = '\0';
-}
-
-int	contains_newline(char *s)
-{
-	while (*s)
-	{
-		if (*s == '\n')
+		if (*(str++) == '\n')
 			return (1);
-		s++;
 	}
 	return (0);
 }
 
-char	*fix_error(char **broken, int ret)
+void	copy_str(char *src, char *dest, int l)
 {
-	char	*fixed;
-	char	*temp;
-
-	temp = *broken;
-	fixed = malloc(ret + 1);
-	if (!fixed)
-		return (NULL);
-	fixed[ret] = '\0';
-	while (ret--)
-		fixed[ret] = temp[ret];
-	final_free(broken);
-	return (fixed);
-}
-
-char	*my_read(int fd, int size, int *rd_err)
-{
-	char	*ret_str;
-	int		ret;
-
-	*rd_err = 0;
-	ret_str = malloc(size + 1);
-	if (!ret_str)
-		return (NULL);
-	ret = read(fd, ret_str, size);
-	if (ret < 0)
-	{
-		*rd_err = 1;
-		free(ret_str);
-		return (NULL);
-	}
-	else if (!ret)
-	{
-		free(ret_str);
-		return (NULL);
-	}
-	ret_str[size] = '\0';
-	if (ret != str_len(ret_str, '\0'))
-		return (fix_error(&ret_str, ret));
-	return (ret_str);
+	while (*src && l--)
+		*(dest++) = *(src++);
 }

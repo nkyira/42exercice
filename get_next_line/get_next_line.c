@@ -1,102 +1,115 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jodavis <marvin@42lausanne.ch>             +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/19 10:08:06 by jodavis           #+#    #+#             */
-/*   Updated: 2024/12/24 16:06:50 by jodavis          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 #include <stdio.h>
+#include <fcntl.h>
 
-void	final_free(char **s)
+static void	save_lft(char *str_lft, char *cursor, char *buff, ssize_t bytes_rd)
 {
-	if (*s)
+	if ((size_t)(cursor - buff) != push_len(buff))
 	{
-		free(*s);
-		*s = NULL;
+		str_lft[bytes_rd] = '\0';
+		bytes_rd--;
+		while (bytes_rd--)
+			str_lft[bytes_rd] = cursor[bytes_rd];
 	}
 }
 
-int	str_add(char **big_str, char *add_str, int *rd_err)
+static char	*cut_str_lft(char *str_lft)
 {
-	char	*new_str;
+	char	*cursor;
+	char	*line;
+	size_t	offset;
 
-	if (*rd_err)
-	{
-		final_free(big_str);
-		return (-1);
-	}
-	else if (!add_str)
-		return (0);
-	new_str = malloc(str_len(*big_str, '\0') + str_len(add_str, '\0') + 1);
-	if (!new_str)
-		return (0);
-	*new_str = '\0';
-	str_cat(new_str, *big_str, '\0');
-	str_cat(new_str, add_str, '\0');
-	free(*big_str);
-	free(add_str);
-	*big_str = new_str;
-	add_str = NULL;
-	return (1);
+	cursor = str_lft;
+	while (*cursor != '\n')
+		cursor++;
+	offset = cursor - str_lft + 1;
+	line = malloc(sizeof(char) * (offset + 1));
+	if (!line)
+		return (NULL);
+	copy_str(str_lft, line, offset);
+	line[offset] = '\0';
+	copy_str(cursor + 1, str_lft, push_len(str_lft) - push_len(line));
+	str_lft[push_len(str_lft) - push_len(line)] = '\0';
+	return (line);
 }
 
-int	cut_trash(char **big_str, char **trash_str)
+static char	*line_alloc(size_t line_l, size_t offset, char *cursor, size_t push)
 {
-	char	*temp;
+	char	*str;
 
-	temp = *big_str;
-	while (*temp != '\n')
-		temp++;
-	temp++;
-	*trash_str = malloc(str_len(temp, '\0') + 1);
-	if (!trash_str)
-		return (0);
-	**trash_str = '\0';
-	str_cat(*trash_str, temp, '\0');
-	temp = malloc(str_len(*big_str, '\n') + 2);
-	if (!temp)
-	{	
-		free(*trash_str);
-		return (0);
+	if (!(line_l + offset + push))
+		return (NULL);
+	str = malloc(sizeof(char) * line_l + offset + push + 1);
+	if (!str)
+		return (NULL);
+	str += line_l + offset + push;
+	*str = '\0';
+	while (offset--)
+		*(--str) = *(--cursor);
+	str -= push;
+	return (str);
+}
+
+static char	*read_next(int fd, ssize_t line_l, char *str_lft, size_t push)
+{
+	char	buff[BUFFER_SIZE];
+	ssize_t	bytes_rd;
+	char	*cursor;
+
+	bytes_rd = read(fd, buff, BUFFER_SIZE);
+	if (bytes_rd < 0)
+		return (NULL);
+	cursor = buff;
+	if (!bytes_rd)
+		return (line_alloc(line_l, (cursor - buff), cursor, push));
+	while (*cursor != '\n' && --bytes_rd)
+		cursor++;
+	if (*cursor == '\n')
+	{
+		save_lft(str_lft, cursor + 1, buff, bytes_rd);
+		return (line_alloc(line_l, (cursor - buff) + 1, cursor + 1, push));
 	}
-	*temp = '\0';
-	str_cat(temp, *big_str, '\n');
-	free(*big_str);
-	*big_str = temp;
-	return (1);
+	bytes_rd = cursor - buff + 1;
+	cursor = read_next(fd, line_l + bytes_rd, str_lft, push);
+	if (!cursor)
+		return (NULL);
+	while (bytes_rd--)
+		*(--cursor + push) = buff[bytes_rd];
+	return (cursor);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*ret_str;
-	static char	*trash_str;
-	int			add_ret;
-	int			rd_err;
+	static char	str_lft[BUFFER_SIZE + 1];
+	char		str_saved[BUFFER_SIZE + 1];
+	char		*line;
 
-	ret_str = trash_str;
-	trash_str = NULL;
-	if (!ret_str)
-	{
-		ret_str = my_read(fd, BUFFER_SIZE, &rd_err);
-		if (!ret_str)
-			return (NULL);
-	}
-	while (!contains_newline(ret_str))
-	{
-		add_ret = str_add(&ret_str, my_read(fd, BUFFER_SIZE, &rd_err), &rd_err);
-		if (add_ret < 0)
-			return (NULL);
-		else if (!add_ret)
-			return (ret_str);
-	}
-	if (str_len(ret_str, '\n') + 1 != str_len(ret_str, '\0'))
-		if (!cut_trash(&ret_str, &trash_str))
-			return (NULL);
-	return (ret_str);
+	if (fd < 0 || BUFFER_SIZE < 1)
+		return (NULL);
+	reset_str(str_saved);
+	if (contains_nl(str_lft))
+		return (cut_str_lft(str_lft));
+	else
+		copy_str(str_lft, str_saved, BUFFER_SIZE + 1);
+	reset_str(str_lft);
+	line = read_next(fd, 0, str_lft, push_len(str_saved));
+	if (line)
+		copy_str(str_saved, line, BUFFER_SIZE + 1);
+	return (line);
 }
+
+/*int	main(void)
+{
+	int	fd;
+	char 	*temp;
+
+
+	fd = open("one_line_no_nl.txt", O_RDONLY);
+	printf("fd = %d\n", fd);
+	do
+	{
+	temp = get_next_line(fd);
+	printf("\n------------------------\n\n%s\n------------------------\n", temp);
+	free(temp);
+	} while (temp);
+}*/
