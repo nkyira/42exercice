@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jodavis <marvin@42lausanne.ch>             +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/22 15:27:38 by jodavis           #+#    #+#             */
+/*   Updated: 2025/01/22 18:53:52 by jodavis          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 #include "stdio.h"
 
@@ -6,7 +18,7 @@ void	reset_str(char *str)
 	int	i;
 
 	i = -1;
-	while (++i <= BUFFER_SIZE + 1)
+	while (++i <= BUFFER_SIZE)
 		str[i] = '\0';
 }
 
@@ -15,7 +27,7 @@ size_t	push_len(char *str_left)
 	size_t	i;
 
 	i = 0;
-	while (str_left[i] && i <= BUFFER_SIZE)
+	while (str_left[i] && i < BUFFER_SIZE)
 		i++;
 	return (i);
 }

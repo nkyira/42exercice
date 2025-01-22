@@ -1,14 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jodavis <marvin@42lausanne.ch>             +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/22 15:27:24 by jodavis           #+#    #+#             */
+/*   Updated: 2025/01/22 20:00:44 by jodavis          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 #include <stdio.h>
 #include <fcntl.h>
 
 static void	save_lft(char *str_lft, char *cursor, char *buff, ssize_t bytes_rd)
 {
-	if ((size_t)(cursor - buff) != push_len(buff))
+	if ((size_t)(cursor - buff))
 	{
-		str_lft[bytes_rd] = '\0';
 		bytes_rd--;
-		while (bytes_rd--)
+		str_lft[bytes_rd] = '\0';
+		while (bytes_rd-- > 0)
 			str_lft[bytes_rd] = cursor[bytes_rd];
 	}
 }
@@ -39,7 +51,7 @@ static char	*line_alloc(size_t line_l, size_t offset, char *cursor, size_t push)
 
 	if (!(line_l + offset + push))
 		return (NULL);
-	str = malloc(sizeof(char) * line_l + offset + push + 1);
+	str = malloc(sizeof(char) * (line_l + offset + push + 1));
 	if (!str)
 		return (NULL);
 	str += line_l + offset + push;
@@ -50,7 +62,7 @@ static char	*line_alloc(size_t line_l, size_t offset, char *cursor, size_t push)
 	return (str);
 }
 
-static char	*read_next(int fd, ssize_t line_l, char *str_lft, size_t push)
+static char	*my_read_next(int fd, ssize_t line_l, char *str_lft, size_t push)
 {
 	char	buff[BUFFER_SIZE];
 	ssize_t	bytes_rd;
@@ -70,7 +82,7 @@ static char	*read_next(int fd, ssize_t line_l, char *str_lft, size_t push)
 		return (line_alloc(line_l, (cursor - buff) + 1, cursor + 1, push));
 	}
 	bytes_rd = cursor - buff + 1;
-	cursor = read_next(fd, line_l + bytes_rd, str_lft, push);
+	cursor = my_read_next(fd, line_l + bytes_rd, str_lft, push);
 	if (!cursor)
 		return (NULL);
 	while (bytes_rd--)
@@ -92,7 +104,7 @@ char	*get_next_line(int fd)
 	else
 		copy_str(str_lft, str_saved, BUFFER_SIZE + 1);
 	reset_str(str_lft);
-	line = read_next(fd, 0, str_lft, push_len(str_saved));
+	line = my_read_next(fd, 0, str_lft, push_len(str_saved));
 	if (line)
 		copy_str(str_saved, line, BUFFER_SIZE + 1);
 	return (line);
@@ -104,8 +116,7 @@ char	*get_next_line(int fd)
 	char 	*temp;
 
 
-	fd = open("one_line_no_nl.txt", O_RDONLY);
-	printf("fd = %d\n", fd);
+	fd = open("variable_nls.txt", O_RDONLY);
 	do
 	{
 	temp = get_next_line(fd);
