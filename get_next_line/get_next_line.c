@@ -109,18 +109,3 @@ char	*get_next_line(int fd)
 		copy_str(str_saved, line, BUFFER_SIZE + 1);
 	return (line);
 }
-
-/*int	main(void)
-{
-	int	fd;
-	char 	*temp;
-
-
-	fd = open("variable_nls.txt", O_RDONLY);
-	do
-	{
-	temp = get_next_line(fd);
-	printf("\n------------------------\n\n%s\n------------------------\n", temp);
-	free(temp);
-	} while (temp);
-}*/
