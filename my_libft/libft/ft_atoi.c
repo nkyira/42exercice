@@ -1,35 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcat.c                                       :+:      :+:    :+:   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jodavis <jodavis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/03 16:58:56 by jodavis           #+#    #+#             */
-/*   Updated: 2024/10/07 15:43:53 by jodavis          ###   ########.fr       */
+/*   Created: 2024/10/07 18:49:07 by jodavis           #+#    #+#             */
+/*   Updated: 2024/10/08 17:52:10 by jodavis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlcat(char *dst, const char *src, size_t l)
+int	ft_atoi(const char *str)
 {
-	size_t	rtn;
-	size_t	sl;
-	size_t	size;
+	int	n;
+	int	sign;
 
-	size = l;
-	sl = ft_strlen(src);
-	rtn = ft_strlen(dst) + sl;
-	while (*dst)
+	n = 0;
+	sign = 1;
+	while (*str == '\t' || *str == '\n' || *str == '\v'
+		|| *str == '\f' || *str == '\r' || *str == ' ')
 	{
-		if (!l)
-			return (sl + size);
-		l--;
-		dst++;
+		str++;
 	}
-	if (!l)
-		return (sl + size);
-	ft_strlcpy(dst, src, l);
-	return (rtn);
+	if (*str == '+' || *str == '-')
+	{
+		sign = -(*str - 44);
+		str++;
+	}
+	while (*str && ft_isdigit(*str))
+	{
+		n = *str - 48 + (10 * n);
+		str++;
+	}
+	return (sign * n);
 }

@@ -1,35 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcat.c                                       :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jodavis <jodavis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/03 16:58:56 by jodavis           #+#    #+#             */
-/*   Updated: 2024/10/07 15:43:53 by jodavis          ###   ########.fr       */
+/*   Created: 2024/10/18 04:19:53 by jodavis           #+#    #+#             */
+/*   Updated: 2024/10/18 04:46:51 by jodavis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlcat(char *dst, const char *src, size_t l)
+void	extract(int n, int fd)
 {
-	size_t	rtn;
-	size_t	sl;
-	size_t	size;
+	char	temp;
 
-	size = l;
-	sl = ft_strlen(src);
-	rtn = ft_strlen(dst) + sl;
-	while (*dst)
+	if (n >= 10)
 	{
-		if (!l)
-			return (sl + size);
-		l--;
-		dst++;
+		extract(n / 10, fd);
 	}
-	if (!l)
-		return (sl + size);
-	ft_strlcpy(dst, src, l);
-	return (rtn);
+	temp = (n % 10) + 48;
+	write(fd, &temp, 1);
+}
+
+void	ft_putnbr_fd(int n, int fd)
+{
+	if (n == -2147483648)
+	{
+		write(fd, "-2147483648", 11);
+		return ;
+	}
+	if (n < 0)
+	{
+		n = -n;
+		write(fd, "-", 1);
+	}
+	extract(n, fd);
 }

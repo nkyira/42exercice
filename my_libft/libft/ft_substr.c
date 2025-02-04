@@ -1,35 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcat.c                                       :+:      :+:    :+:   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jodavis <jodavis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/03 16:58:56 by jodavis           #+#    #+#             */
-/*   Updated: 2024/10/07 15:43:53 by jodavis          ###   ########.fr       */
+/*   Created: 2024/10/08 16:25:27 by jodavis           #+#    #+#             */
+/*   Updated: 2024/10/12 17:39:28 by jodavis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlcat(char *dst, const char *src, size_t l)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	size_t	rtn;
-	size_t	sl;
-	size_t	size;
+	char	*dup;
 
-	size = l;
-	sl = ft_strlen(src);
-	rtn = ft_strlen(dst) + sl;
-	while (*dst)
+	if (len > ft_strlen(s) - start)
+		len = ft_strlen(s) - start;
+	if (start >= ft_strlen(s))
+		return (ft_strdup("\0"));
+	else
 	{
-		if (!l)
-			return (sl + size);
-		l--;
-		dst++;
+		dup = malloc(len + 1);
+		if (!dup)
+			return (NULL);
 	}
-	if (!l)
-		return (sl + size);
-	ft_strlcpy(dst, src, l);
-	return (rtn);
+	ft_strlcpy(dup, s + start, len + 1);
+	return (dup);
 }

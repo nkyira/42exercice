@@ -1,35 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcat.c                                       :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jodavis <jodavis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/03 16:58:56 by jodavis           #+#    #+#             */
-/*   Updated: 2024/10/07 15:43:53 by jodavis          ###   ########.fr       */
+/*   Created: 2024/10/12 18:30:29 by jodavis           #+#    #+#             */
+/*   Updated: 2024/10/18 04:16:31 by jodavis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlcat(char *dst, const char *src, size_t l)
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	size_t	rtn;
-	size_t	sl;
-	size_t	size;
+	size_t			i;
+	unsigned char	*ptr;
 
-	size = l;
-	sl = ft_strlen(src);
-	rtn = ft_strlen(dst) + sl;
-	while (*dst)
+	ptr = (unsigned char *)s;
+	i = 0;
+	while (i < n)
 	{
-		if (!l)
-			return (sl + size);
-		l--;
-		dst++;
+		if (ptr[i] == (unsigned char)c)
+		{
+			return ((void *)(ptr + i));
+		}
+		i++;
 	}
-	if (!l)
-		return (sl + size);
-	ft_strlcpy(dst, src, l);
-	return (rtn);
+	return (NULL);
 }

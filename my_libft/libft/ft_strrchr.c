@@ -1,35 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcat.c                                       :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jodavis <jodavis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/03 16:58:56 by jodavis           #+#    #+#             */
-/*   Updated: 2024/10/07 15:43:53 by jodavis          ###   ########.fr       */
+/*   Created: 2024/10/04 16:11:57 by jodavis           #+#    #+#             */
+/*   Updated: 2024/10/07 15:00:17 by jodavis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlcat(char *dst, const char *src, size_t l)
+char	*ft_strrchr(const char *s, int c)
 {
-	size_t	rtn;
-	size_t	sl;
-	size_t	size;
+	char	*ptr;
 
-	size = l;
-	sl = ft_strlen(src);
-	rtn = ft_strlen(dst) + sl;
-	while (*dst)
+	ptr = (char *)s + ft_strlen(s) -1;
+	if ((unsigned char)c == '\0')
+		return (ptr + 1);
+	while (ptr >= s)
 	{
-		if (!l)
-			return (sl + size);
-		l--;
-		dst++;
+		if (*ptr == (unsigned char)c)
+			return (ptr);
+		ptr--;
 	}
-	if (!l)
-		return (sl + size);
-	ft_strlcpy(dst, src, l);
-	return (rtn);
+	return (NULL);
 }
