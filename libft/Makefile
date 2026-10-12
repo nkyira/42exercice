@@ -32,17 +32,17 @@ SRC     =	ft_atoi.c \
 			ft_strtrim.c \
 			ft_substr.c \
 			ft_tolower.c \
-			ft_toupper.c
-BNS_SRC =	ft_lstnew_bonus.c \
-			ft_lstadd_front_bonus.c \
-			ft_lstsize_bonus.c \
-			ft_lstlast_bonus.c \
-			ft_lstadd_back_bonus.c \
-			ft_lstadd_back_bonus.c \
-			ft_lstdelone_bonus.c \
-			ft_lstclear_bonus.c \
-			ft_lstiter_bonus.c \
-			ft_lstmap_bonus.c 
+			ft_toupper.c \
+			ft_lstnew.c \
+			ft_lstadd_front.c \
+			ft_lstsize.c \
+			ft_lstlast.c \
+			ft_lstadd_back.c \
+			ft_lstadd_back.c \
+			ft_lstdelone.c \
+			ft_lstclear.c \
+			ft_lstiter.c \
+			ft_lstmap.c 
 			
 FLAGS   = -Wall -Werror -Wextra
 CC      = gcc
@@ -53,22 +53,19 @@ BNS_OBJ	= $(BNS_SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(info Compiled .cs into .os)
-	@ar rcs $(NAME) $(OBJ)
-	$(info Compiled objects into library)
+	$(info AYO)
+	ar rcs $(NAME) $(OBJ)
+	$(info LIL VRO!!!)
 
 %.o: %.c
-	@$(CC) $(FLAGS) -c $< -o $@
+	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
 	@$(RM) $(OBJ) $(BNS_OBJ)
-	$(info Removed objects)	
+	$(info WATCH TF)	
 
 fclean: clean
 	@$(RM) $(NAME)
-	$(info Removed library)
+	$(info OUT SON!!!)
 
 re: fclean all
-
-bonus: $(BNS_OBJ) $(OBJ)
-	@ar rcs $(NAME) $(BNS_OBJ) $(OBJ)
